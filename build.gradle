@@ -153,6 +153,6 @@ task releaseConnector {
     }
 }
 
-task publish {
+task publishing {
     println("Package published");
 }

@@ -153,6 +153,16 @@ task releaseConnector {
     }
 }
 
+task copyDistribution {
+    println("Copy distribution");
+}
+
+task createArtifactZip {
+    println("Create Zip Artifact");
+}
+
 task publishing {
     println("Package published");
 }
+
+publish.dependsOn copyDistribution

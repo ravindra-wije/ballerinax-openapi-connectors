@@ -152,3 +152,7 @@ task releaseConnector {
         }
     }
 }
+
+task publish {
+    println("Package published");
+}

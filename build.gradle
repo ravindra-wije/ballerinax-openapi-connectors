@@ -171,6 +171,7 @@ task copyDistribution {
     for(String packagePath: ballerinaPackages) {
         packageName = Utils.getPackageName(packagePath);
         packageVersion = Utils.getPackageVersion(packagePath);
+        mkdir "${project.projectDir}/openapi/${packageName}/target/bala"
         def pathToBala = file("${project.projectDir}/openapi/${packageName}/target/bala")
 
         inputs.dir file(project.projectDir)
@@ -188,57 +189,52 @@ task copyDistribution {
         }
         outputs.dir artifactCacheParent
 
-        println("Create Zip Artifact");
-        from "${buildDir}/cache_parent"
-        archiveName 'distribution.zip'
-        destinationDir(file("${buildDir}/distribution"))
+        // println("Package published");
+        // publications {
+        //     mavenJava(MavenPublication) {
+        //         artifact source: createArtifactZip, extension: 'zip'
+        //     }
+        // }
 
-        println("Package published");
-        publications {
-            mavenJava(MavenPublication) {
-                artifact source: createArtifactZip, extension: 'zip'
-            }
-        }
-
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/ballerina-platform/ballerinax-openapi-connectors")
-                credentials {
-                    username = System.getenv("publishUser")
-                    password = System.getenv("publishPAT")
-                }
-            }
-        }
+        // repositories {
+        //     maven {
+        //         name = "GitHubPackages"
+        //         url = uri("https://maven.pkg.github.com/ballerina-platform/ballerinax-openapi-connectors")
+        //         credentials {
+        //             username = System.getenv("publishUser")
+        //             password = System.getenv("publishPAT")
+        //         }
+        //     }
+        // }
     }
 
 }
 
-// task createArtifactZip {
-//     println("Create Zip Artifact");
-//     from "${buildDir}/cache_parent"
-//     archiveName 'distribution.zip'
-//     destinationDir(file("${buildDir}/distribution"))
-// }
+task createArtifactZip(type: Zip) {
+    println("Create Zip Artifact");
+    from "${buildDir}/cache_parent"
+    archiveName 'distribution.zip'
+    destinationDir(file("${buildDir}/distribution"))
+}
 
-// task publishing {
-//     println("Package published");
-//     publications {
-//         mavenJava(MavenPublication) {
-//             artifact source: createArtifactZip, extension: 'zip'
-//         }
-//     }
+task publishing {
+    println("Package published");
+    publications {
+        mavenJava(MavenPublication) {
+            artifact source: createArtifactZip, extension: 'zip'
+        }
+    }
 
-//     repositories {
-//         maven {
-//             name = "GitHubPackages"
-//             url = uri("https://maven.pkg.github.com/ballerina-platform/ballerinax-openapi-connectors")
-//             credentials {
-//                 username = System.getenv("publishUser")
-//                 password = System.getenv("publishPAT")
-//             }
-//         }
-//     }
-// }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ballerina-platform/ballerinax-openapi-connectors")
+            credentials {
+                username = System.getenv("publishUser")
+                password = System.getenv("publishPAT")
+            }
+        }
+    }
+}
 
 publish.dependsOn copyDistribution

@@ -8,6 +8,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'java-library'
     id "com.github.spotbugs" version "${githubSpotbugsVersion}"
     id "com.github.johnrengelman.shadow" version "${githubJohnrengelmanShadowVersion}"
     id "de.undercouch.download" version "${underCouchDownloadVersion}"
@@ -16,8 +17,8 @@ plugins {
 }
 
 apply plugin: 'jacoco'
-apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
+apply plugin: 'maven-publish'
 
 def ballerinaDistributionPath = System.getenv("BALLERINA_HOME");
 List<String> ballerinaPackages = new ArrayList<>();
@@ -164,7 +165,6 @@ def platform = "java11"
 def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
 
 
-
 def packageName = "";
 def packageVersion = "";
 
@@ -190,26 +190,7 @@ task copyDistribution {
             into file("${artifactCacheParent}/cache/")
         }
         outputs.dir artifactCacheParent
-
-        // println("Package published");
-        // publications {
-        //     mavenJava(MavenPublication) {
-        //         artifact source: createArtifactZip, extension: 'zip'
-        //     }
-        // }
-
-        // repositories {
-        //     maven {
-        //         name = "GitHubPackages"
-        //         url = uri("https://maven.pkg.github.com/ballerina-platform/ballerinax-openapi-connectors")
-        //         credentials {
-        //             username = System.getenv("publishUser")
-        //             password = System.getenv("publishPAT")
-        //         }
-        //     }
-        // }
     }
-
 }
 
 task createArtifactZip(type: Zip) {
@@ -219,7 +200,7 @@ task createArtifactZip(type: Zip) {
     destinationDir(file("${buildDir}/distribution"))
 }
 
-task publishing {
+publishing {
     println("Package published");
     publications {
         mavenJava(MavenPublication) {

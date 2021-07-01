@@ -165,12 +165,13 @@ def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
 
 def packageName = "";
 def packageVersion = "";
-def pathToBala = file("${project.projectDir}/openapi/${package_name}/target/bala")
+
 
 task copyDistribution {
     for(String packagePath: ballerinaPackages) {
         packageName = Utils.getPackageName(packagePath);
         packageVersion = Utils.getPackageVersion(packagePath);
+        def pathToBala = file("${project.projectDir}/openapi/${packageName}/target/bala")
 
         inputs.dir file(project.projectDir)
         pathToBala.eachFileMatch(~/.*.bala/) { balaFile ->

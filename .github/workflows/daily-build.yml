@@ -21,12 +21,6 @@ jobs:
           BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_ACCESS_TOKEN }}
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           GRADLE_USER_HOME: ~/.gradle
-          PACKAGE1_TOKEN1: ${{ secrets.PACKAGE1_TOKEN1 }}
-          PACKAGE2_TOKEN2: ${{ secrets.PACKAGE2_TOKEN2 }}
-          PACKAGE3_TOKEN3: ${{ secrets.PACKAGE3_TOKEN3 }}
-          PACKAGE4_TOKEN4: ${{ secrets.PACKAGE4_TOKEN4 }}
-          PACKAGE5_TOKEN5: ${{ secrets.PACKAGE5_TOKEN5 }}
-          PACKAGE6_TOKEN6: ${{ secrets.PACKAGE6_TOKEN6 }}
         run: |
           ./gradlew build -Prelease=false -Premote=true
 

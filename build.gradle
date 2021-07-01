@@ -12,10 +12,12 @@ plugins {
     id "com.github.johnrengelman.shadow" version "${githubJohnrengelmanShadowVersion}"
     id "de.undercouch.download" version "${underCouchDownloadVersion}"
     id "net.researchgate.release" version "${researchgateReleaseVersion}"
+    id "com.jfrog.artifactory" version "4.4.18"
 }
 
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
 
 def ballerinaDistributionPath = System.getenv("BALLERINA_HOME");
 List<String> ballerinaPackages = new ArrayList<>();

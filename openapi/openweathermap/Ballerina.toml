@@ -1,7 +1,7 @@
 [package]
 license = ["Apache-2.0"]
 keywords = ["open weather map", "weather data", "weather forecast"]
-org = "ballerinax"
+org = "kanishka"
 name = "openweathermap"
 repository = "https://github.com/ballerina-platform/ballerinax-openapi-connectors"
 version = "0.5.1"

@@ -167,7 +167,7 @@ task releaseConnector {
     }
 }
 
-def packageOrg = "ballerinax"
+def packageOrg = "kanishka"
 def platform = "java11"
 def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
 

@@ -129,13 +129,14 @@ task codeBuild {
             exec {
                 commandLine 'sh', '-c', "rm -rf ${ballerinaDistributionPath}/bin/../dependencies/jdk-11.0.8+10-jre"
             }
+
+            // Changing the build distribution to SL Alpha5
+            exec {
+                commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal dist use slalpha5"
+            }
         }
     }
 
-    // Changing the build distribution to SL Alpha5
-    exec {
-        commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal dist use slalpha5"
-    }
     for (String path : updatedBallerinaPackages) {
         println "Code building..."
         Utils.removeSnapshotSuffixFromVersion(path);
@@ -143,6 +144,15 @@ task codeBuild {
             commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal build -c ${path}"
         }
         Utils.addSnapshotSuffixToVersion(path);
+    }
+
+    for (String path : updatedBallerinaPackages) {
+        if (!release) {
+            exec {
+                workingDir "${path}"
+                commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal push --repository=local"
+            }
+        }
     }
 }
 

@@ -138,9 +138,11 @@ task codeBuild {
     }
     for (String path : updatedBallerinaPackages) {
         println "Code building..."
+        Utils.removeSnapshotSuffixFromVersion(path);
         exec {
             commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal build -c ${path}"
         }
+        Utils.addSnapshotSuffixToVersion(path);
     }
 }
 

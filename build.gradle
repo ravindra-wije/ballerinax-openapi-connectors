@@ -8,31 +8,38 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'java-library'
     id "com.github.spotbugs" version "${githubSpotbugsVersion}"
     id "com.github.johnrengelman.shadow" version "${githubJohnrengelmanShadowVersion}"
     id "de.undercouch.download" version "${underCouchDownloadVersion}"
     id "net.researchgate.release" version "${researchgateReleaseVersion}"
-    id "com.jfrog.artifactory" version "4.4.18"
 }
 
 apply plugin: 'jacoco'
-apply plugin: "com.jfrog.artifactory"
 apply plugin: 'maven-publish'
 
-def ballerinaDistributionPath = System.getenv("BALLERINA_HOME");
+def ballerinaDistributionPath = System.getenv("BALLERINA_HOME")
 List<String> ballerinaPackages = new ArrayList<>();
 List<String> updatedBallerinaPackages = new ArrayList<>();
-boolean release = new Boolean(project.property("release").toString())
+boolean release = false;
 boolean remote = false;
+boolean isPublishing = false;
 if (project.hasProperty("remote")){
     remote = new Boolean(project.property("remote").toString())
+}
+if (project.hasProperty("release")){
+    release = new Boolean(project.property("release").toString())
+}
+if (project.hasProperty("publishing")){
+    isPublishing = new Boolean(project.property("publishing").toString())
 }
 
 Utils.loadOpenAPIProperties(project.projectDir.absolutePath)
 String openApiPackageDirPath = project.projectDir.absolutePath + "/openapi";
 updatedBallerinaPackages = Utils.findUpdatedBallerinaPackages(openApiPackageDirPath);
 ballerinaPackages = Utils.findBallerinaPackages(openApiPackageDirPath);
+if (isPublishing){
+    updatedBallerinaPackages = ballerinaPackages;
+}
 
 // TODO: Remove this cleanup task once the file override enabled
 // task cleanup {
@@ -170,26 +177,28 @@ def packageVersion = "";
 
 
 task copyDistribution {
-    for(String packagePath: ballerinaPackages) {
-        packageName = Utils.getPackageName(packagePath);
-        packageVersion = Utils.getPackageVersion(packagePath);
-        mkdir "${project.projectDir}/openapi/${packageName}/target/bala"
-        def pathToBala = file("${project.projectDir}/openapi/${packageName}/target/bala")
+    if (isPublishing) {
+        for(String packagePath: ballerinaPackages) {
+            packageName = Utils.getPackageName(packagePath);
+            packageVersion = Utils.getPackageVersion(packagePath);
+            mkdir "${project.projectDir}/openapi/${packageName}/target/bala"
+            def pathToBala = file("${project.projectDir}/openapi/${packageName}/target/bala")
 
-        inputs.dir file(project.projectDir)
-        pathToBala.eachFileMatch(~/.*.bala/) { balaFile ->
-            copy {
-                from zipTree(balaFile)
-                into file("${artifactCacheParent}/bala/${packageOrg}/${packageName}/${packageVersion}/${platform}")
+            inputs.dir file(project.projectDir)
+            pathToBala.eachFileMatch(~/.*.bala/) { balaFile ->
+                copy {
+                    from zipTree(balaFile)
+                    into file("${artifactCacheParent}/bala/${packageOrg}/${packageName}/${packageVersion}/${platform}")
+                }
             }
+            copy {
+                from file("${packagePath}/target/cache")
+                exclude '**/*-testable.jar'
+                exclude '**/tests_cache/'
+                into file("${artifactCacheParent}/cache/")
+            }
+            outputs.dir artifactCacheParent
         }
-        copy {
-            from file("${packagePath}/${packageName}/target/cache")
-            exclude '**/*-testable.jar'
-            exclude '**/tests_cache/'
-            into file("${artifactCacheParent}/cache/")
-        }
-        outputs.dir artifactCacheParent
     }
 }
 
@@ -201,20 +210,22 @@ task createArtifactZip(type: Zip) {
 }
 
 publishing {
-    println("Package published");
-    publications {
-        mavenJava(MavenPublication) {
-            artifact source: createArtifactZip, extension: 'zip'
+    if (isPublishing){
+        println("Package published");
+        publications {
+            mavenJava(MavenPublication) {
+                artifact source: createArtifactZip, extension: 'zip'
+            }
         }
-    }
 
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ravindra-wije/ballerinax-openapi-connectors")
-            credentials {
-                username = System.getenv("publishUser")
-                password = System.getenv("publishPAT")
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/ravindra-wije/ballerinax-openapi-connectors")
+                credentials {
+                    username = System.getenv("publishUser")
+                    password = System.getenv("publishPAT")
+                }
             }
         }
     }

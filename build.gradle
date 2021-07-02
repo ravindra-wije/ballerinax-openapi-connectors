@@ -119,8 +119,8 @@ if (isPublishing){
 
 // Temporarily added.
 task codeBuild {
-    // Pulling slalpha5 distribution if not available
     if (project.hasProperty("remote") ) {
+        // Pulling slalpha5 distribution if not available
         if (remote) {
             exec {
                 commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal dist pull slalpha5"
@@ -175,7 +175,7 @@ task releaseConnector {
                 println "Success"
             }
             print "Updating package hashes: "
-            Utils.writeUpdatedFileHashes(project.projectDir.absolutePath, updatedBallerinaPackages)
+            // Utils.writeUpdatedFileHashes(project.projectDir.absolutePath, updatedBallerinaPackages)
             println "Success"
         }
     }

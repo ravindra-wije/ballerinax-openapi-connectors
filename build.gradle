@@ -148,10 +148,12 @@ task codeBuild {
 
     for (String path : updatedBallerinaPackages) {
         if (!release) {
+            Utils.removeSnapshotSuffixFromVersion(path);
             exec {
                 workingDir "${path}"
                 commandLine 'sh', '-c', "${ballerinaDistributionPath}/bin/bal push --repository=local"
             }
+            Utils.addSnapshotSuffixToVersion(path);
         }
     }
 }

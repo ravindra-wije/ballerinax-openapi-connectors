@@ -3,7 +3,7 @@ license = ["Apache-2.0"]
 keywords = ["BitBucket", "Pull Request", "Repository"]
 org = "kanishka"
 name = "bitbucket"
-version = "0.1.1"
+version = "0.1.2-SNAPSHOT"
 authors = ["Ballerina"]
 [build-options]
 observabilityIncluded = true

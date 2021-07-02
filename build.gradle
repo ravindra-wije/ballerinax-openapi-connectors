@@ -175,7 +175,7 @@ task releaseConnector {
                 println "Success"
             }
             print "Updating package hashes: "
-            // Utils.writeUpdatedFileHashes(project.projectDir.absolutePath, updatedBallerinaPackages)
+            Utils.writeUpdatedFileHashes(project.projectDir.absolutePath, updatedBallerinaPackages)
             println "Success"
         }
     }

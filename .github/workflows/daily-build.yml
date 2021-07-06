@@ -2,8 +2,7 @@ name: Daily build
 
 # Controls when the action will run.
 on: 
-  schedule:
-    - cron: '30 2 * * *'
+  push
 
 jobs:
   dailyBuild:
